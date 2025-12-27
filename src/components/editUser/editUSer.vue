@@ -23,14 +23,16 @@
     <el-text type="success" size="large"> 欢迎修改基本的信息:</el-text>
     <el-upload
     class="avatar-uploader"
-    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+    action="http://localhost:8080/avatar"
     :show-file-list="false"
+    :disabled="imageup"
     :on-success="handleAvatarSuccess"
     :before-upload="beforeAvatarUpload"
   >
     <img v-if="imageUrl" :src="imageUrl" class="avatar" />
     <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
   </el-upload>
+  <el-icon v-if="imageUrl" class="deleteIcon" @click="delIcon"><Delete /></el-icon>
 <el-form :model="form"  label-width="5vw" :inline="false">
 <el-form-item label="名字">
 <el-input v-model="form.username"></el-input>
@@ -55,9 +57,13 @@
 </template>
 <script setup>
     import {ref,onMounted,reactive} from 'vue'
+    import { useRouter } from 'vue-router'
+    import { ElMessage } from 'element-plus'
     import {userheaders} from '../../store/urlStore'
     import { storeToRefs } from 'pinia'
-   
+    const router = useRouter()
+    const imageup=ref(false)
+    const imageUrl=ref('')
     const headers = userheaders();
     const { token } = storeToRefs(headers);
     // 定义数据
@@ -72,6 +78,7 @@
         form.username=data.username
         form.password=data.password
         form.id=data.id
+        imageUrl.value=data.image
 
     }
     // 下面我来定义我的删除事件
@@ -128,13 +135,47 @@ async function onSubmit(){
         id: form.id,
       username: form.username,
       password: form.password,
-      hole: form.hole})
-});
+      hole: form.hole,
+      image: imageUrl.value
+      })
+    })
     if(response.ok){
     const data = await response.json()
-        alert(data);
+    if(data){
+        ElMessage("修改成功");
+        router.replace("/nav")
     }
+  }
 }
+
+
+const handleAvatarSuccess = async (response, uploadFile, uploadFiles)=>{
+
+ setTimeout(()=>imageUrl.value=response.url,3000)
+ console.log(uploadFile)
+ imageup.value=true
+ElMessage("文件上传成功")
+}
+async function delavatar(){
+  if(imageUrl.value!=''){
+   const fileName= imageUrl.value.split('/').pop();
+  const response = await fetch('http://localhost:8080/delavatar',{
+    method:'Post',
+    headers:{'Content-Type': 'application/json'},
+    body: JSON.stringify({"fileName":fileName})
+  })
+  const data = await response.json()
+  if(data){
+    imageUrl.value=''
+    imageup.value=false
+   ElMessage("删除成功");
+  }else{
+    ElMessage("删除失败");
+  }
+  }
+}
+const delIcon=()=>{
+delavatar()}
 onMounted(()=>getList())
 </script>
 <style scoped>
@@ -182,6 +223,10 @@ onMounted(()=>getList())
   height: 100%;
   object-fit: cover; /* 保持图片比例 */
 }
-
-
+.deleteIcon{
+  position:absolute;
+  left:25vw;
+  top:9vh;
+  z-index: 4000;
+}
 </style>

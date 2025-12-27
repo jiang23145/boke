@@ -39,7 +39,7 @@
       if(wq.ok){
       console.log('/login 请求已返回，准备解析 json');
       const data = await wq.json();
-      
+      console.log(data)
     if (data.Token!=null) {
       //这里我不使用 localStorage 我使用Pinia
       // localStorage.setItem('token', data.token);
@@ -47,6 +47,7 @@
         state.islogin=true
         state.name=username.value
         state.token=data.Token
+        state.image=data.image
       })
       console.log(headers.token)
       router.push('/nav');
