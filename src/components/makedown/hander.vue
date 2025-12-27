@@ -1,7 +1,7 @@
 <template>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="#">水哥在线博客</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -9,14 +9,12 @@
       <input class="form-control me-2" type="text" placeholder="标题" aria-label="Search" v-model="searchname">
       <ul class="navbar-nav ms-auto"> 
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+          <RouterLink to="/nav" class="nav-link active" aria-current="page">Home</RouterLink>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
+          <RouterLink to="/nav" class="nav-link" style="margin-right: 10px;">创作中心</RouterLink>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
-        </li>
+        
       </ul>
     
   </div>
@@ -256,8 +254,7 @@ if(wq.ok){
         state.contentid=''
         state.contentimage=''
         state.driftName=''
-    })
-         
+    })       
           router.push('/nav')
        
       }

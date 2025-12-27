@@ -3,9 +3,10 @@
     <el-image src="\img\标题.jpg" fit="cover" scale="10" style="height:auto;width: 60px;margin-left: 30px;"/>
    <router-link to="/" style="text-decoration: none;"> <el-text size="large" style="margin-top:20px;margin-left:30px;color:#222226">创作中心</el-text></router-link>
 </div>
+
 <div class="right" >
     <div v-on:mouseover="change()" @mouseout="likai()">
-    <el-avatar :size="40" src="\img\微信图片_20251201235143_5602_23.jpg" class="image" fit="cover" />
+    <el-avatar :size="40" :src="image" class="image" fit="cover" />
         <div class="xuanting" :style="{ display: show }">
         <el-button type="success" plain size="default" @click=""><el-icon><Close /></el-icon>退出</el-button>
     </div>
@@ -17,6 +18,9 @@
 </template>
 <script setup>
     import {ref} from 'vue'
+   import {userheaders} from '../../store/urlStore' 
+   const headers = userheaders();
+   const{image}=headers;
     const circleUrl=ref('https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png')
     // 通过display来
     const show = ref('none')
@@ -36,5 +40,8 @@ const likai=()=>show.value='none'
         position:absolute;
         left:88vw;
         top:60px
+    }
+    .enter{
+
     }
 </style>
