@@ -14,22 +14,22 @@
      <input class="input" type="text" v-model="username" placeholder="请输入你的名字..."/> 
     <el-text size="large" class="text">密码:</el-text>
      <input class="input" type="password" v-model="password" placeholder="密码..."/>
-     <el-button type="success" round @click="handleSubmit()"class="button">登陆</el-button>
+     <el-button type="success" round @click="handleSubmit()"class="button">注册</el-button>
      <div class="end">
       <div>
       <el-icon><ChromeFilled /></el-icon>
       <el-icon><ElemeFilled /></el-icon>
      </div>
-      <router-link to="/register" style="text-decoration: none;"><el-text size="large">注册账号</el-text></router-link>
+      <router-link to="/" style="text-decoration: none;"><el-text size="large">已有账号</el-text></router-link>
     </div>
     </div>
   </div>
 </template>
 <script setup>
-   import { ElMessage } from 'element-plus'
   import {ref} from 'vue'
     import { useRouter } from 'vue-router'
     import {userheaders} from '../../store/urlStore'
+    import { ElMessage } from 'element-plus'
   const username=ref('')
   const password=ref('')
   const router = useRouter()
@@ -39,33 +39,25 @@
       // 下面这一步很重要
       const user = {
         username: username.value,
-        userpassword: password.value,
+        password: password.value,
       }
-      const wq = await fetch('http://localhost:8080/login', {
+      const wq = await fetch('http://localhost:8080/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user)
       });
       if(wq.ok){
-      console.log('/login 请求已返回，准备解析 json');
+      console.log('/register 请求已返回，准备解析 json');
       const data = await wq.json();
       console.log(data)
-    if (data.Token!=null) {
-      //这里我不使用 localStorage 我使用Pinia
-      // localStorage.setItem('token', data.token);
-      headers.$patch((state)=>{
-        state.islogin=true
-        state.name=username.value
-        state.token=data.Token
-        state.image=data.image
-      })
-      console.log(headers.token)
-      router.push('/nav');
-      ElMessage('登录成功')
+        if(data){
+          router.push('/');
+          ElMessage('注册成功，欢迎')
+        }
     }
      
   }
-}
+
   
 </script>
 <style scoped>
@@ -133,7 +125,7 @@ height:50vh;
 .end{
   display:flex;
   justify-content: space-between;
-  margin-top: 2vh;
-   
+ margin-top: 2vh;
+ 
 }
 </style>

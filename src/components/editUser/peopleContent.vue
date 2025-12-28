@@ -1,5 +1,5 @@
 <template>
-     <el-table :data="contentList" style="width: 80vw" height="90vh">
+     <el-table v-if="contentList.length>0" :data="contentList" style="width: 80vw" height="90vh" empty-text>
         <el-table-column fixed  label="文章" width="500px">
             <template #default="scale">
                 <div class="title">
@@ -37,7 +37,7 @@ const headers = userheaders();
 const contentheader = contentheaders();
 const { token } = storeToRefs(headers);
 const router = useRouter()
-const contentList= ref() 
+const contentList= ref([]); 
 // 下面的请求我的所有的内容
 async function GainContent(){
         const response = await fetch('http://localhost:8080/getContent', {
@@ -48,6 +48,7 @@ async function GainContent(){
     })
     if(response.ok){
         const data = await response.json();
+        console.log(data)
         contentList.value=data
         console.log(contentList.value)
     }
