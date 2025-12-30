@@ -2,7 +2,7 @@
   <div class="main" >
     <div class="first">
       <div class="first-up">
-       <el-image src='/img/微信图片_20251201235143_5602_23.jpg' fit="cover" :lazy="true"></el-image>
+       <el-image src='\img\微信图片_20251201235143_5602_23.jpg' fit="cover"  :lazy="true"></el-image>
       </div>
       <div class="first-down">
        <el-text class="mx-1" type="success" size="large" style="text-shadow: green 10px 10px 2px;">欢迎来到水哥的在线博客</el-text>
@@ -86,6 +86,7 @@
   width: 25vw;
   display:flex;
 flex-direction:column;
+  border: 2px solid aliceblue; 
 }  
 .first-up {
 width:25vw;
@@ -96,7 +97,8 @@ height:50vh
 width:25vw;
 height:50vh;
  justify-content: center;  
-  align-items: center; 
+  align-items: center;
+ 
 } 
 /* vh 是视口大小 
  page 的最大为width 1528

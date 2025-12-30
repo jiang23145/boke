@@ -95,7 +95,8 @@
 });
     if(response.ok){
     const data = await response.json()
-        alert(data);
+        ElMessage(data)
+        window.location.reload();
     }
 
     }

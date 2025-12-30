@@ -1,27 +1,8 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <input class="form-control me-2" type="text" placeholder="标题" aria-label="Search" v-model="searchname">
-      <ul class="navbar-nav ms-auto"> 
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
-        </li>
-      </ul>
-    
-  </div>
-</nav> 
 <div class="center">
+    <div class="header">
+        <headwq></headwq>
+    </div>
     <div class="main">
     <h4 style="margin-top: 2vh;margin-left: 1vw;margin-bottom: 3vh;">消息中心</h4>
         <div class="content">
@@ -29,7 +10,7 @@
         <el-table :data="friends" style="width:10vw;margin-left: 20px; height:68vh" @row-click="handleClick" :border="true">
             <el-table-column prop="username">
             <template #header>
-                 <el-avatar :size="40" src="\img\微信图片_20251201235143_5602_23.jpg"  fit="cover" />
+                 <el-avatar :size="40" :src="image"  fit="cover" />
                  <el-Text size="large">{{ name }}</el-Text>
             </template> 
             <template #default="scale">
@@ -48,6 +29,7 @@
     </div>
 </template>
 <script setup>
+  import headwq from '../nav/headwq.vue'
 import {userheaders} from '../../store/urlStore'
 import { storeToRefs } from 'pinia'
 import {ref,onMounted,onUnmounted} from 'vue'
@@ -57,7 +39,7 @@ import SockJS from 'sockjs-client'
  const router=useRouter();
 const friends=ref([])
 const headers = userheaders();
-const { token,name } = storeToRefs(headers);
+const { token,name,image,messages} = storeToRefs(headers);
 async function getList(){
     console.log(token.value)
 const wq = await fetch('http://localhost:8080/friend/get', {
@@ -86,7 +68,7 @@ function handleClick(row){
   })
   router.push({name:'chat',params:{name:row.username}})
 }
-const messages = ref('')
+//const messages = ref('')
 const connect = () => {
   // 创建 STOMP 客户端，使用 SockJS
   client.value = new Client({
@@ -123,12 +105,15 @@ const connect = () => {
        
       })
       client.value.subscribe('/user/queue/message',(message)=>{
-        console.log(message.body)
-         headers.$patch((state)=>{
-          console.log(state.messages)
-        state.messages.value=[message.body.message]
-  })
-
+        console.log('收到私信:', message.body)
+        console.log(typeof(message.body))
+        const messageData=JSON.parse(message.body)
+        console.log(typeof(messageData))
+  //        headers.$patch((state)=>{
+  //         console.log(state.messages)
+  //       state.messages.value=[messageData.message]
+  // })
+    messages.value.push(messageData.message)
         
       })
       
@@ -161,10 +146,11 @@ onUnmounted(() => {
 </script>
 <style scoped>
     .center{
+       flex-direction: column;
         width:100vw;
         height:90vh;
         display: flex;
-        justify-content: center;
+        
         align-items: center;
        
     }
@@ -172,6 +158,7 @@ onUnmounted(() => {
         display: flex;
         height:80vh;
         width: 80vw;
+        margin-top: 10vh;
         box-shadow: var(--el-border-color-light) 0px 0px 10px;
         flex-direction: column;
     }
@@ -186,5 +173,9 @@ onUnmounted(() => {
        border-top-style: groove;
        border-top-width: 1px;
     }
-    
+    .header{
+    height: 10vh;width:100vw;position: fixed; top: 0; left: 0;z-index: 1000;justify-content: space-between;
+        display:flex;margin-bottom: 10vh;
+
+}
 </style>

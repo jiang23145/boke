@@ -6,15 +6,15 @@ const contentimage=ref('')
 const driftName= ref('')
 const contentid = ref('')
 
-function reset(){
-    console.log("我执行到了这里")
-     this.$reset()
+function resetStore(){
+    console.log("我执行到了这里123")
+    // this.$reset()
     
 }
-return {content,driftName,contentimage,contentid,reset}
+return {content,driftName,contentimage,contentid,resetStore}
 },{
     persist:{
-    key: 'co',
+    key: 'Content',
     paths: ['content']
     }
 }

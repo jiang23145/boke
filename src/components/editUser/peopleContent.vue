@@ -32,6 +32,7 @@ import {userheaders} from '../../store/urlStore'
 import { contentheaders } from '../../store/contentStore'
 import { storeToRefs } from 'pinia'
 import {ref,onMounted} from 'vue'
+import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 const headers = userheaders();
 const contentheader = contentheaders();
@@ -77,7 +78,26 @@ function Update(data,index){
     router.push('/down')
 }
    
+async function deleteEvent(data,index){
+    console.log("方法执行到了这里")
+    const response = await fetch('http://localhost:8080/deleteContent', {
+    method: 'Post',
+    headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token.value}`
+    },body:JSON.stringify({
+        contentid:data.contentid
+    })})
+    if(response.ok){
+        const request = await response.json();
+       
+        if(request){
+             ElMessage("删除成功");
+            window.location.reload();
+        }
+    }
     
+}
 
 // 在挂载的时候去调用我的 GainContent
 onMounted(()=>GainContent())

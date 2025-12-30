@@ -275,7 +275,8 @@ console.log(JSON.stringify(user))
       console.log('/saveCoent 请求已返回，准备解析 json');
       const data = await wq.json();
       if(data){
-        alert("发布成功")
+        ElMessage("发布成功")
+        router.push('/nav')
       }
 }
   }

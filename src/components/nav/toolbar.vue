@@ -12,7 +12,7 @@
         </template>
         </el-menu-item>
         <el-menu-item index="1">
-        <template #title><el-icon><HomeFilled /></el-icon><el-text size="large">首页</el-text></template>
+        <template #title><router-link to="/home" style="text-decoration: none;"><el-icon><HomeFilled /></el-icon><el-text size="large">首页</el-text></router-link></template>
        </el-menu-item>
         <el-sub-menu index="2">
             <template #title><el-icon><Memo /></el-icon><el-text>管理</el-text></template>
@@ -42,7 +42,9 @@
        </el-menu-item>
        </el-sub-menu>
        <el-menu-item index="4"><router-link to= '/nav/edit' style="text-decoration: none;"><el-text><el-icon><User/></el-icon>用户管理</el-text></router-link></el-menu-item>
+        <el-menu-item index="4"><router-link to= '/nav/' style="text-decoration: none;"><el-text><el-icon><PictureFilled /></el-icon>作者照片墙</el-text></router-link></el-menu-item>
     </el-menu>
+    
     </el-col>
     <el-col :span="18" :offset="5" >
         <div style="height:90vh;" class="teng">
