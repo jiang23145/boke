@@ -1,11 +1,12 @@
 <template>
   <div class="big">
-    <div class="username">
+    <div class="user">
    <el-text size="large" class="text">{{ username}}</el-text> 
+   
     </div>
     <div class="first">
      <el-scrollbar class="second">
-        <div v-for="item in messages">
+        <div v-for="item in messages.get(username)" :key="item">
           <el-text>{{ item }}</el-text>
         </div>
         </el-scrollbar>
@@ -23,37 +24,47 @@
 </template>
 
 <script setup>
-import { ref, onUnmounted} from 'vue'
+import { ref, onUnmounted, watch} from 'vue'
 import {userheaders} from '../../store/urlStore'
 import { storeToRefs } from 'pinia'
  import { useRouter,useRoute} from 'vue-router'
  import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn' 
+
  const useRoutes = useRoute()
 const header = userheaders()
 const {token,connect,messages} = storeToRefs(header)
 const data = ref('')
 
-const username= useRoutes.params.name
+
+const username= ref(useRoutes.params.name)
+username.value=useRoutes.params.name
+//下面我进行username的监听
+watch(()=>useRoutes.params.name,(newVal)=>{
+  username.value=newVal
+ 
+})
                                                                                                                                                                                                                                                                                                                                                                             
 function sendMessage(){
   const time =ref(dayjs().format('YYYY-MM-DD-HH-mm-ss'))
-  messages.value.push(data.value)
+  // 判断有没有这个用户
+  if(!header.messages.has(username.value)){
+          header.messages.set(username.value,[])
+        }
+  header.messages.get(username.value).push(data.value)
   console.log(typeof time)
   console.log(time)
   const times = time.value
   const message= data.value
 connect.value.publish({
       destination: '/app/chat',  
-      body: JSON.stringify({"toUser":username,"message":message,"time":times})
+      body: JSON.stringify({"toUser":username.value,"message":message,"time":times})
     })}
 </script>
 <style>
   .text{
     position:relative;
-    left:2vw;
-    top:1vh;
+    left:1vw;
   }
   .big{
     display: flex;
@@ -61,9 +72,12 @@ connect.value.publish({
     width: inherit;
     flex-direction: column;
   }
-  .username{
+  .user{
     width: inherit;
     height:6vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .first{
     display: flex;

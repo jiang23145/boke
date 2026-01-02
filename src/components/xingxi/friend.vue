@@ -4,9 +4,14 @@
         <headwq></headwq>
     </div>
     <div class="main">
+      <div class="first">
     <h4 style="margin-top: 2vh;margin-left: 1vw;margin-bottom: 3vh;">消息中心</h4>
-        <div class="content">
-           
+    <div>
+   <el-input v-model="friend" placeholder="请输入朋友名" class="text" style="width: 20vw;margin-right: 2vw;"></el-input>
+   <el-button style="margin-right: 1vw;" type="danger" @click="addfriend">添加朋友</el-button>
+   </div>
+    </div>
+        <div class="content">    
         <el-table :data="friends" style="width:10vw;margin-left: 20px; height:68vh" @row-click="handleClick" :border="true">
             <el-table-column prop="username">
             <template #header>
@@ -29,6 +34,7 @@
     </div>
 </template>
 <script setup>
+  import { ElMessage } from 'element-plus'
   import headwq from '../nav/headwq.vue'
 import {userheaders} from '../../store/urlStore'
 import { storeToRefs } from 'pinia'
@@ -36,10 +42,35 @@ import {ref,onMounted,onUnmounted} from 'vue'
 import { Client } from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
  import { useRouter} from 'vue-router'
+
  const router=useRouter();
 const friends=ref([])
 const headers = userheaders();
 const { token,name,image,messages} = storeToRefs(headers);
+const friend=ref('')
+// 定义friend 添加事件
+async function addfriend(){
+  const wq = await fetch('http://localhost:8080/friend/pushFriend', {
+    method: 'Post',
+    headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token.value}` },
+    body: JSON.stringify({"friend":friend.value})
+});
+if(wq.ok){
+      console.log('/addfriend 请求已返回，准备解析 json');
+      const data = await wq.json();
+   if(data){
+    ElMessage('添加成功')
+    // 并且进行重新加载
+    window.location.reload()
+   }
+    else{
+      ElMessage('添加失败，该用户不存在或已是好友')
+   
+}
+}
+}
 async function getList(){
     console.log(token.value)
 const wq = await fetch('http://localhost:8080/friend/get', {
@@ -53,7 +84,12 @@ const wq = await fetch('http://localhost:8080/friend/get', {
       const data = await wq.json();
     friends.value=data
     console.log(data)
-}
+    // 下面根据friends 进行遍历让后设置我的map
+   
+       
+    
+   
+ }
 }
 
 
@@ -66,7 +102,8 @@ function handleClick(row){
   headers.$patch((state)=>{
     state.connect=client.value
   })
-  router.push({name:'chat',params:{name:row.username}})
+  router.replace({name:'chat',params:{name:row.username}})
+
 }
 //const messages = ref('')
 const connect = () => {
@@ -109,11 +146,18 @@ const connect = () => {
         console.log(typeof(message.body))
         const messageData=JSON.parse(message.body)
         console.log(typeof(messageData))
+        console.log(headers.messages)
+        // 先判断有没有这个key
+        if(!headers.messages.has(messageData.fromUser)){
+          headers.messages.set(messageData.fromUser,[])
+        }
+        headers.messages.get(messageData.fromUser).push(messageData)
+        console.log(headers.messages.get(messageData.fromUser))
+       
   //        headers.$patch((state)=>{
   //         console.log(state.messages)
   //       state.messages.value=[messageData.message]
   // })
-    messages.value.push(messageData.message)
         
       })
       
@@ -161,6 +205,13 @@ onUnmounted(() => {
         margin-top: 10vh;
         box-shadow: var(--el-border-color-light) 0px 0px 10px;
         flex-direction: column;
+    }
+    .first{
+        display:flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+       
     }
     .content{
         display: flex;

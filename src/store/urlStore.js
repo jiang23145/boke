@@ -7,13 +7,13 @@ const islogin = ref(false)
 const content=ref('')
 const driftName= ref('')
 const connect = ref('')
-const messages= reactive([])
+const messages= reactive(new Map())
 const image = ref('')
 return {token,name,islogin,content,driftName,connect,messages,image}
 },{
     persist:{
     key: 'my',
-    paths: ['token']
+    paths: ['token','messages']
     }
 }
 )
