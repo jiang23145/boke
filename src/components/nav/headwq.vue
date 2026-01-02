@@ -8,7 +8,7 @@
 </div>
 <div class="right" >
     <div v-on:mouseover="change()" @mouseout="likai()">
-    <el-avatar :size="40" :src="image" class="image" fit="cover" />
+    <el-avatar :size="40" :src="image" class="image" fit="cover" @click="displayperson"/>
         <div class="xuanting" :style="{ display: show }">
         <el-button type="success" plain size="default" @click="writeoff"><el-icon><Close /></el-icon>退出</el-button>
     </div>
@@ -41,6 +41,9 @@ const writeoff=()=>{
    
    localStorage.removeItem('my');
    router.push('/');
+}
+const displayperson=()=>{
+    router.push('/person')
 }
 
 </script>

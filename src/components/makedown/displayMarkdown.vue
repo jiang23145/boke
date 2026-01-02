@@ -73,12 +73,12 @@ display: flex;
 .main1{
   width:65vw;
   height:100vh;
-  background-color: aliceblue;
+ 
   box-shadow: var(--el-border-color-light) 0px 0px 10px;
   
 }
 img.custom-markdown-image {
-  max-width: 50vw !important;
+  max-width: 40vw !important;
   height: auto !important;
   object-fit: contain !important;
   display: block !important;

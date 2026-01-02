@@ -12,11 +12,11 @@
     <div class="frist">
     <el-avatar :src="item.image" />
     <el-text size="large" style="margin-left: 1vw;">{{ item.username }}</el-text>
-    </div>
+    </div class="second">
     <el-text size="large" style="margin-left: 1vw;margin-top: 1vh;">{{ item.driftName }}</el-text>
-    <el-text size="large"><el-button type="warning" :icon="Star" circle style="margin-top: 1vh;" />{{ item.likeCount }}</el-text>
+     
     </div>
-   
+    
    <div class="imageDiv">
    <el-image :src="item.contentimage" :scale="40" style="height:inherit;width: inherit;" />
    </div>
@@ -59,6 +59,7 @@ async function loadMore(){
     if(response.ok){
         const data = await response.json();
         if(data.length>0){
+             ElMessage("加载中....")
             data.forEach(item => {
                 num.value.push(item);
                 console.log(item);
@@ -80,6 +81,7 @@ async function searchContent(){
     if(response.ok){        
         const data = await response.json();
         num.value=[];
+       
         data.forEach(item => {
             
             num.value.push(item);
@@ -146,6 +148,7 @@ onMounted(async()=>{
         align-items: center;
         justify-content: top;
     }
+    
     .up{
         display: flex;
         flex-direction: column;
@@ -156,5 +159,9 @@ onMounted(async()=>{
         width:77vw;
         height:90vh;
         margin-left: 3vw;
+    }
+    .like{
+        position: relative;
+       
     }
 </style>
